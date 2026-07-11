@@ -1,0 +1,11 @@
+[project]
+name = "forward-bot-new"
+version = "0.1.0"
+description = "Bot to Forward telegram messages"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "aiosqlite>=0.22.1",
+    "dotenv>=0.9.9",
+    "telethon>=1.44.0",
+]
