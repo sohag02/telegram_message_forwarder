@@ -11,6 +11,6 @@ wheels/
 
 *.session
 .env
-.env.*
+.env
 logs/*
 data/*
