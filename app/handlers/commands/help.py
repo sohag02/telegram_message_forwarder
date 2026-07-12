@@ -10,4 +10,7 @@ async def help(event):
 `.add` <source_chat_id> <destination_chat_id> - Add a new mapping
 `.delete` <source_chat_id> <destination_chat_id> - Delete a mapping
 `.list` - List all active mappings
+`.blacklist <word>` - Add a word to the blacklist
+`.rmblacklist <word>` - Delete a word from the blacklist
+`.listblacklist` - List all words in the blacklist
 """)
