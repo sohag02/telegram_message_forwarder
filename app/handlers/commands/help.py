@@ -21,4 +21,5 @@ async def help(event):
 `.blacklist <word>` - Add a word to the blacklist
 `.rmblacklist <word>` - Delete a word from the blacklist
 `.listblacklist` - List all words in the blacklist
+`.backup` - Create a backup of the database
 """)
