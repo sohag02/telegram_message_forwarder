@@ -11,6 +11,7 @@ class Settings:
     api_id: int = int(os.getenv("API_ID"))
     api_hash: str = os.getenv("API_HASH")
     session_string: str = os.getenv("SESSION_STRING")
+    dev_id: int = int(os.getenv("DEV_TG_ID"))
 
 
 settings = Settings()
