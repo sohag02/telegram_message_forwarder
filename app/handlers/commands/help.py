@@ -1,14 +1,17 @@
 from app.client import client
 from telethon import events
 from app.logger import logger
+from app.handlers.commands import is_authorized, send_response
 
 
 @client.on(events.NewMessage(pattern=".help"))
 async def help(event):
+    if not await is_authorized(event):
+        return
 
     logger.info("Command | .help")
     
-    await event.edit("""
+    await send_response(event, """
 **Available Commands**
 
 `.help` - Display this help message

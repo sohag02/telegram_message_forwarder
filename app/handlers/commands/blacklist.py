@@ -3,11 +3,12 @@ from telethon import events
 from app.client import client
 from app.services.blacklist import BlacklistService
 from app.logger import logger
+from app.handlers.commands import is_authorized, send_response
 
 
 @client.on(events.NewMessage(pattern=r"^.blacklist(?:\s+(.+))?$"))
 async def add_blacklist(event: events.NewMessage.Event):
-    if not event.out:
+    if not await is_authorized(event):
         return
 
     phrase = event.pattern_match.group(1)
@@ -15,7 +16,8 @@ async def add_blacklist(event: events.NewMessage.Event):
     logger.info(f"Command | .blacklist | phrase={phrase}")
 
     if not phrase:
-        await event.reply(
+        await send_response(
+            event,
             "Usage:\n"
             "`.blacklist <phrase>`"
         )
@@ -26,19 +28,21 @@ async def add_blacklist(event: events.NewMessage.Event):
     added = await BlacklistService.add_phrase(phrase)
 
     if not added:
-        await event.reply(
+        await send_response(
+            event,
             f'⚠️ "{phrase}" is already in the blacklist.'
         )
         return
 
-    await event.reply(
+    await send_response(
+        event,
         f'✅ Added blacklist phrase:\n\n"{phrase}"'
     )
 
 
 @client.on(events.NewMessage(pattern=r"^.rmblacklist(?:\s+(.+))?$"))
 async def remove_blacklist(event: events.NewMessage.Event):
-    if not event.out:
+    if not await is_authorized(event):
         return
 
     phrase = event.pattern_match.group(1)
@@ -46,7 +50,8 @@ async def remove_blacklist(event: events.NewMessage.Event):
     logger.info(f"Command | .rmblacklist | phrase={phrase}")
 
     if not phrase:
-        await event.reply(
+        await send_response(
+            event,
             "Usage:\n"
             "`.rmblacklist <phrase>`"
         )
@@ -57,19 +62,21 @@ async def remove_blacklist(event: events.NewMessage.Event):
     removed = await BlacklistService.remove_phrase(phrase)
 
     if not removed:
-        await event.reply(
+        await send_response(
+            event,
             f'⚠️ "{phrase}" is not in the blacklist.'
         )
         return
 
-    await event.reply(
+    await send_response(
+        event,
         f'✅ Removed blacklist phrase:\n\n"{phrase}"'
     )
 
 
 @client.on(events.NewMessage(pattern=r"^.listblacklist$"))
 async def list_blacklist(event: events.NewMessage.Event):
-    if not event.out:
+    if not await is_authorized(event):
         return
 
     logger.info("Command | .listblacklist")
@@ -77,7 +84,7 @@ async def list_blacklist(event: events.NewMessage.Event):
     phrases = BlacklistService.get_phrases()
 
     if not phrases:
-        await event.reply("📭 The blacklist is empty.")
+        await send_response(event, "📭 The blacklist is empty.")
         return
 
     lines = [
@@ -88,4 +95,4 @@ async def list_blacklist(event: events.NewMessage.Event):
     for i, phrase in enumerate(phrases, start=1):
         lines.append(f"{i}. `{phrase}`")
 
-    await event.reply("\n".join(lines))
+    await send_response(event, "\n".join(lines))

@@ -6,16 +6,17 @@ from telethon import events
 from app.client import client
 from app.services.backup import BackupService
 from app.logger import logger
+from app.handlers.commands import is_authorized, send_response
 
 
 @client.on(events.NewMessage(pattern=r"^.backup$"))
 async def backup_database(event: events.NewMessage.Event):
-    if not event.out:
+    if not await is_authorized(event):
         return
 
     logger.info("Command | .backup")
 
-    status = await event.edit("📦 Creating backup...")
+    status = await send_response(event, "📦 Creating backup...")
 
     try:
         backup = await asyncio.to_thread(

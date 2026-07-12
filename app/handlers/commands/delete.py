@@ -3,12 +3,12 @@ from telethon import events
 from app.client import client
 from app.services.mapping import MappingService
 from app.logger import logger
+from app.handlers.commands import is_authorized, send_response
 
 
 @client.on(events.NewMessage(pattern=r"^.(?:del|delete)\s+(.+?)\s+(.+)$"))
 async def delete_mapping(event: events.NewMessage.Event):
-    # Only process commands sent by yourself
-    if not event.out:
+    if not await is_authorized(event):
         return
 
     source_input = event.pattern_match.group(1).strip()
@@ -21,7 +21,7 @@ async def delete_mapping(event: events.NewMessage.Event):
         destination = await client.get_entity(int(destination_input))
 
     except Exception:
-        await event.edit("❌ Could not resolve one or both chats.")
+        await send_response(event, "❌ Could not resolve one or both chats.")
         return
 
     removed = await MappingService.remove_mapping(
@@ -30,10 +30,11 @@ async def delete_mapping(event: events.NewMessage.Event):
     )
 
     if not removed:
-        await event.edit("⚠️ Mapping does not exist.")
+        await send_response(event, "⚠️ Mapping does not exist.")
         return
 
-    await event.edit(
+    await send_response(
+        event,
         f"✅ Mapping removed\n"
         f"Source: {source.title}\n"
         f"Destination: {destination.title}"

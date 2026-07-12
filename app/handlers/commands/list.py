@@ -4,12 +4,13 @@ from telethon.tl.types import Channel, User
 from app.client import client
 from app.services.mapping import MappingService
 from app.logger import logger
+from app.config import settings
+from app.handlers.commands import is_authorized, send_response
 
 
 @client.on(events.NewMessage(pattern=r"^.list$"))
 async def list_mappings(event: events.NewMessage.Event):
-    # Only process commands sent by yourself
-    if not event.out:
+    if not await is_authorized(event):
         return
 
     logger.info("Command | .list")
@@ -17,10 +18,10 @@ async def list_mappings(event: events.NewMessage.Event):
     mappings = await MappingService.get_all_mappings()
 
     if not mappings:
-        await event.edit("📭 No mappings configured.")
+        await send_response(event, "📭 No mappings configured.")
         return
 
-    await event.edit("🔄 Loading mappings...")
+    status_msg = await send_response(event, "🔄 Loading mappings...")
 
     # Cache entity lookups to avoid resolving the same chat repeatedly
     entity_cache: dict[int, str] = {}
@@ -71,4 +72,4 @@ async def list_mappings(event: events.NewMessage.Event):
             f"{i}. {status} {source} → {destination}"
         )
 
-    await event.edit("\n".join(lines))
+    await status_msg.edit("\n".join(lines))

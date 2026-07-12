@@ -3,12 +3,12 @@ from telethon import events
 from app.client import client
 from app.services.mapping import MappingService
 from app.logger import logger
+from app.handlers.commands import is_authorized, send_response
 
 
 @client.on(events.NewMessage(pattern=r"^.add\s+(.+?)\s+(.+)$"))
 async def add_mapping(event: events.NewMessage.Event):
-    # Only allow yourself to execute commands
-    if not event.out:
+    if not await is_authorized(event):
         return
 
     source_input = int(event.pattern_match.group(1).strip())
@@ -21,7 +21,7 @@ async def add_mapping(event: events.NewMessage.Event):
         destination = await client.get_entity(destination_input)
 
     except Exception:
-        await event.edit("❌ Could not resolve one or both chats.")
+        await send_response(event, "❌ Could not resolve one or both chats.")
         return
 
     added = await MappingService.add_mapping(
@@ -30,10 +30,11 @@ async def add_mapping(event: events.NewMessage.Event):
     )
 
     if not added:
-        await event.edit("⚠️ Mapping already exists.")
+        await send_response(event, "⚠️ Mapping already exists.")
         return
 
-    await event.edit(
+    await send_response(
+        event,
         f"✅ Mapping added\n"
         f"Source: {source.title}\n"
         f"Destination: {destination.title}"
