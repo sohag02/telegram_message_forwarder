@@ -17,3 +17,9 @@ class ForwardedMessage:
 
     destination_chat_id: int
     destination_message_id: int
+
+@dataclass(slots=True, frozen=True)
+class BlacklistEntry:
+    id: int
+    phrase: str
+    enabled: bool

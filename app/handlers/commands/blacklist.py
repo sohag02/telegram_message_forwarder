@@ -1,0 +1,84 @@
+from telethon import events
+
+from app.client import client
+from app.services.blacklist import BlacklistService
+
+
+@client.on(events.NewMessage(pattern=r"^.blacklist(?:\s+(.+))?$"))
+async def add_blacklist(event: events.NewMessage.Event):
+    if not event.out:
+        return
+
+    phrase = event.pattern_match.group(1)
+
+    if not phrase:
+        await event.reply(
+            "Usage:\n"
+            "`.blacklist <phrase>`"
+        )
+        return
+
+    phrase = phrase.strip()
+
+    added = await BlacklistService.add_phrase(phrase)
+
+    if not added:
+        await event.reply(
+            f'⚠️ "{phrase}" is already in the blacklist.'
+        )
+        return
+
+    await event.reply(
+        f'✅ Added blacklist phrase:\n\n"{phrase}"'
+    )
+
+
+@client.on(events.NewMessage(pattern=r"^.rmblacklist(?:\s+(.+))?$"))
+async def remove_blacklist(event: events.NewMessage.Event):
+    if not event.out:
+        return
+
+    phrase = event.pattern_match.group(1)
+
+    if not phrase:
+        await event.reply(
+            "Usage:\n"
+            "`.rmblacklist <phrase>`"
+        )
+        return
+
+    phrase = phrase.strip()
+
+    removed = await BlacklistService.remove_phrase(phrase)
+
+    if not removed:
+        await event.reply(
+            f'⚠️ "{phrase}" is not in the blacklist.'
+        )
+        return
+
+    await event.reply(
+        f'✅ Removed blacklist phrase:\n\n"{phrase}"'
+    )
+
+
+@client.on(events.NewMessage(pattern=r"^.listblacklist$"))
+async def list_blacklist(event: events.NewMessage.Event):
+    if not event.out:
+        return
+
+    phrases = BlacklistService.get_phrases()
+
+    if not phrases:
+        await event.reply("📭 The blacklist is empty.")
+        return
+
+    lines = [
+        "**Global Blacklist**",
+        "",
+    ]
+
+    for i, phrase in enumerate(phrases, start=1):
+        lines.append(f"{i}. `{phrase}`")
+
+    await event.reply("\n".join(lines))

@@ -54,6 +54,13 @@ class Database:
                     destination_chat_id
                 )
             );
+
+            CREATE TABLE IF NOT EXISTS blacklist (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+                phrase TEXT NOT NULL UNIQUE,
+                enabled INTEGER NOT NULL DEFAULT 1
+            );
         """)
 
 
