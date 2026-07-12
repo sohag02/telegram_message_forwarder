@@ -6,6 +6,7 @@ from datetime import datetime
 from pathlib import Path
 
 from app.db.index import DB_PATH
+from app.logger import logger
 
 
 class BackupService:
@@ -46,5 +47,7 @@ class BackupService:
             )
 
         db_backup.unlink()
+
+        logger.info(f"DB Backup created at : {timestamp}")
 
         return zip_backup

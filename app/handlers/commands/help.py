@@ -1,8 +1,13 @@
 from app.client import client
 from telethon import events
+from app.logger import logger
+
 
 @client.on(events.NewMessage(pattern=".help"))
 async def help(event):
+
+    logger.info("Command | .help")
+    
     await event.edit("""
 **Available Commands**
 

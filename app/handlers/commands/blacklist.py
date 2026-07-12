@@ -2,6 +2,7 @@ from telethon import events
 
 from app.client import client
 from app.services.blacklist import BlacklistService
+from app.logger import logger
 
 
 @client.on(events.NewMessage(pattern=r"^.blacklist(?:\s+(.+))?$"))
@@ -10,6 +11,8 @@ async def add_blacklist(event: events.NewMessage.Event):
         return
 
     phrase = event.pattern_match.group(1)
+
+    logger.info(f"Command | .blacklist | phrase={phrase}")
 
     if not phrase:
         await event.reply(
@@ -40,6 +43,8 @@ async def remove_blacklist(event: events.NewMessage.Event):
 
     phrase = event.pattern_match.group(1)
 
+    logger.info(f"Command | .rmblacklist | phrase={phrase}")
+
     if not phrase:
         await event.reply(
             "Usage:\n"
@@ -66,6 +71,8 @@ async def remove_blacklist(event: events.NewMessage.Event):
 async def list_blacklist(event: events.NewMessage.Event):
     if not event.out:
         return
+
+    logger.info("Command | .listblacklist")
 
     phrases = BlacklistService.get_phrases()
 

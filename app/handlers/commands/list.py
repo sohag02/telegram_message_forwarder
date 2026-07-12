@@ -3,6 +3,7 @@ from telethon.tl.types import Channel, User
 
 from app.client import client
 from app.services.mapping import MappingService
+from app.logger import logger
 
 
 @client.on(events.NewMessage(pattern=r"^.list$"))
@@ -10,6 +11,8 @@ async def list_mappings(event: events.NewMessage.Event):
     # Only process commands sent by yourself
     if not event.out:
         return
+
+    logger.info("Command | .list")
 
     mappings = await MappingService.get_all_mappings()
 

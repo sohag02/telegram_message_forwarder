@@ -2,6 +2,7 @@ from telethon import events
 
 from app.client import client
 from app.services.mapping import MappingService
+from app.logger import logger
 
 
 @client.on(events.NewMessage(pattern=r"^.add\s+(.+?)\s+(.+)$"))
@@ -12,6 +13,9 @@ async def add_mapping(event: events.NewMessage.Event):
 
     source_input = int(event.pattern_match.group(1).strip())
     destination_input = int(event.pattern_match.group(2).strip())
+
+    logger.info(f"Command | .add | source={source_input} | destination={destination_input}")
+    
     try:
         source = await client.get_entity(source_input)
         destination = await client.get_entity(destination_input)

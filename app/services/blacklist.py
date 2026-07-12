@@ -1,4 +1,5 @@
 from app.db.blacklist_repository import BlacklistRepository
+from app.logger import logger
 
 
 class BlacklistService:
@@ -40,6 +41,8 @@ class BlacklistService:
         if added:
             cls._phrases.add(phrase)
 
+        logger.info(f'Blacklist phrase added : {phrase}')
+
         return added
 
     @classmethod
@@ -50,6 +53,8 @@ class BlacklistService:
 
         if removed:
             cls._phrases.discard(phrase)
+
+        logger.info(f'Blacklist phrase removed : {phrase}')
 
         return removed
 

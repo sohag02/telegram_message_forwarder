@@ -5,12 +5,15 @@ from telethon import events
 
 from app.client import client
 from app.services.backup import BackupService
+from app.logger import logger
 
 
 @client.on(events.NewMessage(pattern=r"^.backup$"))
 async def backup_database(event: events.NewMessage.Event):
     if not event.out:
         return
+
+    logger.info("Command | .backup")
 
     status = await event.edit("📦 Creating backup...")
 

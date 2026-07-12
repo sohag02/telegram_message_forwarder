@@ -2,6 +2,7 @@ from telethon import events
 
 from app.client import client
 from app.services.mapping import MappingService
+from app.logger import logger
 
 
 @client.on(events.NewMessage(pattern=r"^.(?:del|delete)\s+(.+?)\s+(.+)$"))
@@ -12,6 +13,8 @@ async def delete_mapping(event: events.NewMessage.Event):
 
     source_input = event.pattern_match.group(1).strip()
     destination_input = event.pattern_match.group(2).strip()
+
+    logger.info(f"Command | .delete | source={source_input} | destination={destination_input}")
 
     try:
         source = await client.get_entity(int(source_input))

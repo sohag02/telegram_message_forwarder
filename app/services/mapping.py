@@ -2,6 +2,7 @@ from collections import defaultdict
 
 from app.db.models import Mapping
 from app.db.mapping_repository import MappingRepository
+from app.logger import logger
 
 
 class MappingService:
@@ -58,6 +59,8 @@ class MappingService:
 
         cls._cache[source_chat_id].append(destination_chat_id)
 
+        logger.info(f'Mapping added : {source_chat_id} -> {destination_chat_id}')
+
         return True
 
     @classmethod
@@ -89,6 +92,8 @@ class MappingService:
 
         if not destinations:
             del cls._cache[source_chat_id]
+
+        logger.info(f'Mapping removed : {source_chat_id} -> {destination_chat_id}')
 
         return True
 
