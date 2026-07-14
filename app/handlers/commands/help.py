@@ -12,14 +12,24 @@ async def help(event):
     logger.info("Command | .help")
     
     await send_response(event, """
-**Available Commands**
+**🤖 Available Commands**
 
-`.help` - Display this help message
-`.add` <source_chat_id> <destination_chat_id> - Add a new mapping
-`.delete` <source_chat_id> <destination_chat_id> - Delete a mapping
-`.list` - List all active mappings
-`.blacklist <word>` - Add a word to the blacklist
-`.rmblacklist <word>` - Delete a word from the blacklist
-`.listblacklist` - List all words in the blacklist
-`.backup` - Create a backup of the database
+**🔗 Chat Mappings**
+• `.add <source_chat_id> <destination_chat_id>` - Add a new forwarding mapping
+• `.delete <source_chat_id> <destination_chat_id>` - Delete an existing mapping (alias: `.del`)
+• `.list` - List all active mappings and their status
+
+**🚫 Blacklist**
+• `.blacklist <phrase>` - Prevent forwarding of messages containing the phrase
+• `.rmblacklist <phrase>` - Remove a phrase from the blacklist
+• `.listblacklist` - List all blacklisted phrases
+
+**🔄 Text Replacements**
+• `.replace <replacement>` - Add a replacement rule (Reply to a message containing the text you want to replace)
+• `.rmreplace` - Remove a replacement rule (Reply to a message containing the original text)
+• `.listreplace` - List all active text replacement rules
+
+**💾 System & Database**
+• `.backup` - Create and send a database backup file
+• `.help` - Display this help message
 """)

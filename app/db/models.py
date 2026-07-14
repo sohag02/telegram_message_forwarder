@@ -23,3 +23,10 @@ class BlacklistEntry:
     id: int
     phrase: str
     enabled: bool
+
+@dataclass(slots=True, frozen=True)
+class ReplacementRule:
+    id: int
+    search: str
+    replacement: str
+    enabled: bool

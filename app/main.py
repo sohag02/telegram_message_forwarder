@@ -2,6 +2,7 @@ from app.client import client
 from app.db.index import db
 from app.services.mapping import MappingService
 from app.services.blacklist import BlacklistService
+from app.services.replacement import ReplacementService
 from app.utills import import_submodules
 from app.logger import logger
 
@@ -12,6 +13,7 @@ async def main():
     await db.connect()
     await MappingService.load_cache()
     await BlacklistService.load_cache()
+    await ReplacementService.load_cache()
 
     await client.start() # type:ignore
     me = await client.get_me()

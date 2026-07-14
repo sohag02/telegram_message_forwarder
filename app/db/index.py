@@ -61,6 +61,15 @@ class Database:
                 phrase TEXT NOT NULL UNIQUE,
                 enabled INTEGER NOT NULL DEFAULT 1
             );
+
+            CREATE TABLE IF NOT EXISTS replacements (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+                search TEXT NOT NULL UNIQUE,
+                replacement TEXT NOT NULL,
+
+                enabled INTEGER NOT NULL DEFAULT 1
+            );
         """)
 
 
