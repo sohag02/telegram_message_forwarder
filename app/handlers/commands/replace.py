@@ -141,18 +141,48 @@ async def list_replacements(event: events.NewMessage.Event):
         )
         return
 
-    lines = [
-        f"**Replacement Rules ({len(rules)})**",
-        "",
-    ]
-
+    rule_strings = []
     for i, rule in enumerate(rules, start=1):
-        lines.append(
+        rule_strings.append(
             f"{i}. `{rule.search}`\n"
             f"   ➜ `{rule.replacement}`"
         )
 
-    await send_response(
-        event,
-        "\n\n".join(lines)
-    )
+    messages = []
+    current_chunk = []
+    
+    header = f"**Replacement Rules ({len(rules)})**"
+    cont_header = "**Replacement Rules (continued)**"
+    
+    curr_header = header
+    curr_len = len(curr_header) + 2
+    
+    for rule_str in rule_strings:
+        needed_len = len(rule_str)
+        if current_chunk:
+            needed_len += 2
+            
+        if curr_len + needed_len > 4000:
+            if not current_chunk:
+                current_chunk.append(rule_str)
+                messages.append(curr_header + "\n\n" + "\n\n".join(current_chunk))
+                current_chunk = []
+                curr_header = cont_header
+                curr_len = len(curr_header) + 2
+            else:
+                messages.append(curr_header + "\n\n" + "\n\n".join(current_chunk))
+                current_chunk = [rule_str]
+                curr_header = cont_header
+                curr_len = len(curr_header) + 2 + len(rule_str)
+        else:
+            current_chunk.append(rule_str)
+            curr_len += needed_len
+            
+    if current_chunk:
+        messages.append(curr_header + "\n\n" + "\n\n".join(current_chunk))
+
+    for i, msg in enumerate(messages):
+        if i == 0:
+            await send_response(event, msg)
+        else:
+            await event.reply(msg)
